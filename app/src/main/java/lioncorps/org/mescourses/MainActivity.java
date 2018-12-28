@@ -1,74 +1,69 @@
 package lioncorps.org.mescourses;
 
-import android.support.v7.app.AppCompatActivity;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.StrictMode;
+import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
-import org.codehaus.jackson.JsonFactory;
-import org.codehaus.jackson.JsonParser;
-import org.codehaus.jackson.map.ObjectMapper;
-
 import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
 import lioncorps.org.mescourses.bean.Collection;
 
 public class MainActivity extends AppCompatActivity {
-
+ServiceProvider serviceProvider = new ServiceProvider();
+    Collection collection;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        new JSONParseTask().execute();
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+    }
 
-        try {
-            Collection collection = loadCourses();
-            displayCourses(collection);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+    private class JSONParseTask extends AsyncTask<String, String, Collection> {
+
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            }
+
+        @Override
+        protected Collection doInBackground(String... args) {
+
+            try {
+                collection = serviceProvider.loadCourses();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return collection;
+        }
+
+        @Override
+        protected void onPostExecute(Collection json) {
+
+
+            try {
+                final ListCoursesAdapter adapter = new ListCoursesAdapter(getApplicationContext(), collection, MainActivity.this);
+                ListView list = findViewById(R.id.list);
+                list.setAdapter(adapter);
+
+
+
+
+            } catch (Exception e) {
+
+            }
         }
     }
 
-    private void displayCourses(Collection collection) throws JSONException {
-        final TextView mTextView = (TextView) findViewById(R.id.text);
 
-
-    }
-
-    private Collection loadCourses() throws JSONException, IOException {
-        String stringJson =  "{\n" +
-                "    \"id\": 1,\n" +
-                "    \"listes\": [\n" +
-                "        {\n" +
-                "            \"id\": 1,\n" +
-                "            \"nom\": \"Liste 1\",\n" +
-                "            \"template\": true,\n" +
-                "            \"items\": [\n" +
-                "                {\n" +
-                "                    \"id\": 1,\n" +
-                "                    \"nom\": \"Item 1\",\n" +
-                "                    \"quantite\": \"2 kg\",\n" +
-                "                    \"done\": false\n" +
-                "                }\n" +
-                "            ]\n" +
-                "        },\n" +
-                "        {\n" +
-                "            \"id\": 2,\n" +
-                "            \"nom\": \"Liste 2\",\n" +
-                "            \"template\": false,\n" +
-                "            \"items\": []\n" +
-                "        }\n" +
-                "    ]\n" +
-                "}";
-
-        final ObjectMapper mapper = new ObjectMapper();
-        final JsonFactory factory = mapper.getJsonFactory();
-        JsonParser jp = factory.createJsonParser(new ByteArrayInputStream(stringJson.getBytes("UTF-8")));
-        //Jacksonize to bean
-        return mapper.readValue(jp, Collection.class);
-    }
 }
