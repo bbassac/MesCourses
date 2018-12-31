@@ -20,6 +20,6 @@ class ClickListListener implements View.OnClickListener {
 
     @Override
     public void onClick(View view) {
-        Toast.makeText(context,"display liste " + currentListe.toString(),Toast.LENGTH_LONG).show();
+        displayActivity.loadItems(currentListe.getId());
     }
 }

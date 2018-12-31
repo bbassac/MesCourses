@@ -48,7 +48,7 @@ public class ServiceProvider {
         return mapper.readValue(jp, Collection.class);
     }
 
-    public Liste loadItems() throws IOException {
+    public Liste loadItems(Long listID) throws IOException {
         String stringJson = "{\n" +
                 "    \"id\": 1,\n" +
                 "    \"nom\": \"Liste 1\",\n" +
@@ -59,7 +59,13 @@ public class ServiceProvider {
                 "            \"nom\": \"Item 1\",\n" +
                 "            \"quantite\": \"2 kg\",\n" +
                 "            \"done\": false\n" +
-                "        }\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"id\": 2,\n" +
+                "            \"nom\": \"Item 3\",\n" +
+                "            \"quantite\": \"4 sacs\",\n" +
+                "            \"done\": true\n" +
+                "        }\n"+
                 "    ]\n" +
                 "}";
 

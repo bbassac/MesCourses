@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/itemId"
+        android:layout_width="1dp"
+        android:layout_height="1dp"
+        android:visibility="invisible"/>
+
+    <TextView
+        android:id="@+id/nomItem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:textColor="#000000"
+        android:layout_marginLeft="10dp"
+        android:text="Nom" />
+
+    <TextView
+        android:id="@+id/quantiteItem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/nom"
+        android:textColor="#000000"
+        android:layout_marginStart="240dp"
+        android:layout_marginTop="10dp"
+        android:layout_toEndOf="@+id/nom"
+        android:text="Quantite" />
+
+    <CheckBox
+        android:id="@+id/doneItem"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="15dp"
+        android:theme="@style/MyCheckBox"/>
+
+
+
+</RelativeLayout>

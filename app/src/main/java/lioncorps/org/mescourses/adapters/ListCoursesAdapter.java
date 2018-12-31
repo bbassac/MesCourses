@@ -53,12 +53,12 @@ public class ListCoursesAdapter extends BaseAdapter  {
         if (view == null) {
             LayoutInflater inflater = LayoutInflater.from(context);
             view = inflater.inflate(R.layout.display_lists, null);
-            view.setClickable(true);
-            view.setOnClickListener(new ClickListListener(context, displayActivity, liste));
         }
 
-        ((TextView) view.findViewById(R.id.nom)).setText(liste.getNom());
-
+        TextView nomtextView = view.findViewById(R.id.nom);
+        nomtextView.setText(liste.getNom());
+        nomtextView.setClickable(true);
+        nomtextView.setOnClickListener(new ClickListListener(context, displayActivity, liste));
 
         ImageView imgView = view.findViewById(R.id.lockedImg);
         if (liste.getTemplate()) {
