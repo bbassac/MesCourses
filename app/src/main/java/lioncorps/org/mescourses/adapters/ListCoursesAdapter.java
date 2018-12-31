@@ -1,4 +1,4 @@
-package lioncorps.org.mescourses;
+package lioncorps.org.mescourses.adapters;
 
 
 import android.content.Context;
@@ -12,6 +12,8 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import lioncorps.org.mescourses.MainActivity;
+import lioncorps.org.mescourses.R;
 import lioncorps.org.mescourses.bean.Collection;
 import lioncorps.org.mescourses.bean.Liste;
 
@@ -52,7 +54,7 @@ public class ListCoursesAdapter extends BaseAdapter  {
             LayoutInflater inflater = LayoutInflater.from(context);
             view = inflater.inflate(R.layout.display_lists, null);
             view.setClickable(true);
-
+            view.setOnClickListener(new ClickListListener(context, displayActivity, liste));
         }
 
         ((TextView) view.findViewById(R.id.nom)).setText(liste.getNom());

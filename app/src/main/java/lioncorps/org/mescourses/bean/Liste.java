@@ -9,6 +9,15 @@ public class Liste {
     private Boolean template;
     private List<Item> items;
 
+    @Override
+    public String toString() {
+        return "Liste{" +
+                "id=" + id +
+                ", nom='" + nom + '\'' +
+                ", template=" + template +
+                '}';
+    }
+
     public Long getId() {
         return id;
     }
