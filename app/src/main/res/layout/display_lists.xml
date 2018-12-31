@@ -1,29 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical">
 
-
-
+    <TextView
+        android:id="@+id/listId"
+        android:layout_width="1dp"
+        android:layout_height="1dp"
+        android:visibility="invisible"/>
     <TextView
         android:id="@+id/nom"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="70dp"
         android:layout_alignParentTop="true"
         android:text="nom"
-        android:textColor="#dfc11f"/>
+        android:textColor="#000000"
+        android:textSize="60sp" />
 
-    <TextView
-        android:id="@+id/template"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="right"
-        android:textColor="#dfc11f"
-        android:text="template"
-        android:layout_alignParentEnd="true" />
+    <ImageView
+        android:id="@+id/lockedImg"
 
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentTop="true"
 
+        android:layout_alignParentEnd="true"
+
+        android:visibility="visible" />
 
 
 </RelativeLayout>

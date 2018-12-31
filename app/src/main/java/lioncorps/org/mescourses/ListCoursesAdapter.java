@@ -6,7 +6,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import lioncorps.org.mescourses.bean.Collection;
 import lioncorps.org.mescourses.bean.Liste;
@@ -52,8 +56,16 @@ public class ListCoursesAdapter extends BaseAdapter  {
         }
 
         ((TextView) view.findViewById(R.id.nom)).setText(liste.getNom());
-        ((TextView) view.findViewById(R.id.template)).setText(liste.getTemplate().toString());
 
+
+        ImageView imgView = view.findViewById(R.id.lockedImg);
+        if (liste.getTemplate()) {
+
+            Picasso.get().load(R.mipmap.locked).into(imgView);
+        }
+        else {
+            Picasso.get().load(R.mipmap.unlocked).into(imgView);
+        }
 
         return view;
     }
