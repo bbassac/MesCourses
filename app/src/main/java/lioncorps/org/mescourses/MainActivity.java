@@ -22,9 +22,12 @@ import lioncorps.org.mescourses.adapters.ListCoursesAdapter;
 import lioncorps.org.mescourses.adapters.ListItemsAdapter;
 import lioncorps.org.mescourses.bean.Collection;
 import lioncorps.org.mescourses.bean.Liste;
+import lioncorps.org.mescourses.services.IServiceProvider;
+import lioncorps.org.mescourses.services.InMemoryServiceProvider;
+import lioncorps.org.mescourses.services.WebServiceProvider;
 
 public class MainActivity extends AppCompatActivity {
-    ServiceProvider serviceProvider = ServiceProvider.getInstance();
+    IServiceProvider serviceProvider = WebServiceProvider.getInstance();
     Collection collection;
     Liste currentList;
     Long currentListId;
@@ -143,20 +146,13 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected Collection doInBackground(String... args) {
-
-            try {
-                collection = serviceProvider.loadCollection();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            collection =  serviceProvider.loadCollection();
             return collection;
         }
 
         @Override
         protected void onPostExecute(Collection json) {
-
             reloadListeCoursesView();
-
         }
     }
 

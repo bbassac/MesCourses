@@ -1,6 +1,5 @@
-package lioncorps.org.mescourses;
+package lioncorps.org.mescourses.services;
 
-import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.map.ObjectMapper;
 
@@ -12,19 +11,18 @@ import lioncorps.org.mescourses.bean.Collection;
 import lioncorps.org.mescourses.bean.Item;
 import lioncorps.org.mescourses.bean.Liste;
 
-public class ServiceProvider {
-    final ObjectMapper mapper = new ObjectMapper();
-    final JsonFactory factory = mapper.getJsonFactory();
+public class InMemoryServiceProvider implements IServiceProvider {
+
     private static Collection internalCollection = null ;
-    private static ServiceProvider instance;
-    public static ServiceProvider getInstance() {
+    private static InMemoryServiceProvider instance;
+    public static InMemoryServiceProvider getInstance() {
         if (instance ==null){
-            instance = new ServiceProvider();
+            instance = new InMemoryServiceProvider();
         }
         return instance;
     }
 
-    private ServiceProvider() {
+    private InMemoryServiceProvider() {
         String stringJson = "{\n" +
                 "    \"id\": 1,\n" +
                 "    \"listes\": [\n" +
@@ -52,9 +50,10 @@ public class ServiceProvider {
 
 
         //Jacksonize to bean
-        JsonParser jp = null;
+
         try {
-            jp = factory.createJsonParser(new ByteArrayInputStream(stringJson.getBytes("UTF-8")));
+            final ObjectMapper mapper = new ObjectMapper();
+            JsonParser jp = mapper.getJsonFactory().createJsonParser(new ByteArrayInputStream(stringJson.getBytes("UTF-8")));
             internalCollection =  mapper.readValue(jp, Collection.class);
         } catch (IOException e) {
             e.printStackTrace();
@@ -63,10 +62,12 @@ public class ServiceProvider {
 
 
 
-    public Collection loadCollection() throws IOException {
+    @Override
+    public Collection loadCollection()  {
         return internalCollection;
     }
 
+    @Override
     public Liste loadListe(Long listID) {
         for (Liste l : internalCollection.getListes()){
             if (l.getId().equals(listID)){
@@ -77,6 +78,7 @@ public class ServiceProvider {
 
     }
 
+    @Override
     public Liste addItemToListe(Long listId, String nom, String quantite){
         Item item = new Item();
         item.setNom(nom);
@@ -92,6 +94,7 @@ public class ServiceProvider {
         return loadListe(listId);
     }
 
+    @Override
     public Collection addListe(String nom) {
         Liste l = new Liste();
         l.setId(new Random().nextLong());
