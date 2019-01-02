@@ -9,9 +9,6 @@
         android:visible="false"
         app:showAsAction="always" />
 
-    <item
-        android:id="@+id/menu_quit"
-        android:title="Quit"
-        app:showAsAction="ifRoom" />
+
 
 </menu>

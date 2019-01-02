@@ -9,8 +9,19 @@
     <ListView
         android:id="@+id/list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="445dp" />
 
-    </ListView>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/micRecord"
+        android:layout_width="52dp"
+        android:layout_height="49dp"
+        android:layout_gravity="end|bottom"
+
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:src="@mipmap/ic_plus"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/list" />
 
 </android.support.constraint.ConstraintLayout>

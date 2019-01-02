@@ -1,5 +1,6 @@
 package lioncorps.org.mescourses.bean;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Collection {
@@ -20,5 +21,12 @@ public class Collection {
 
     public void setListes(List<Liste> listes) {
         this.listes = listes;
+    }
+
+    public void addListe(Liste l) {
+        if(listes == null){
+            listes = new ArrayList<>();
+        }
+        listes.add(l);
     }
 }
