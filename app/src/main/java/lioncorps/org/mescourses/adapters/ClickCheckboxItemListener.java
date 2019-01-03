@@ -10,8 +10,10 @@ import lioncorps.org.mescourses.MainActivity;
 import lioncorps.org.mescourses.TextViewUtils;
 import lioncorps.org.mescourses.bean.Item;
 import lioncorps.org.mescourses.bean.Liste;
+import lioncorps.org.mescourses.services.IServiceProvider;
+import lioncorps.org.mescourses.services.WebServiceProvider;
 
-class ClickListItemListener implements View.OnClickListener {
+class ClickCheckboxItemListener implements View.OnClickListener {
     private Item currentItem;
     private MainActivity displayActivity;
     private Context context;
@@ -20,7 +22,7 @@ class ClickListItemListener implements View.OnClickListener {
     TextView quantiteTextView;
 
 
-    public ClickListItemListener(Context context, MainActivity displayActivity, Item item, TextView idItemtextView, TextView nameItemtextView, TextView quantiteTextView) {
+    public ClickCheckboxItemListener(Context context, MainActivity displayActivity, Item item, TextView idItemtextView, TextView nameItemtextView, TextView quantiteTextView) {
         this.displayActivity = displayActivity;
         this.context = context;
         this.currentItem = item;
@@ -39,6 +41,6 @@ class ClickListItemListener implements View.OnClickListener {
             TextViewUtils.unStrike(nameItemtextView);
             TextViewUtils.unStrike(quantiteTextView);
         }
-
+         WebServiceProvider.getInstance().updateItem(currentItem.getId(),nameItemtextView.getText().toString(),quantiteTextView.getText().toString(),checkBox.isChecked());
     }
 }

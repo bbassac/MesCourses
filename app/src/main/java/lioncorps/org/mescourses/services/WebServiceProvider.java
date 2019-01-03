@@ -106,4 +106,29 @@ public class WebServiceProvider implements IServiceProvider {
         }
         return null;
     }
+
+    @Override
+    public Liste updateItem(Long id, String nom, String quantite, boolean done) {
+        Item item = new Item();
+        item.setId(id);
+        item.setNom(nom);
+        item.setQuantite(quantite);
+        item.setDone(done);
+        try {
+            String jsonObject = mapper.writer().writeValueAsString(item);
+            HttpRequest httpRequest = new HttpRequest(url + "/item", "PUT");
+            httpRequest.contentType(HttpRequest.CONTENT_TYPE_JSON, HttpRequest.CHARSET_UTF8);
+            httpRequest.send(jsonObject);
+
+            String response = httpRequest.body();
+
+            JsonParser jp = mapper.getJsonFactory().createJsonParser(new ByteArrayInputStream(response.getBytes("UTF-8")));
+            Liste liste = mapper.readValue(jp, Liste.class);
+            return liste;
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+
+    }
 }

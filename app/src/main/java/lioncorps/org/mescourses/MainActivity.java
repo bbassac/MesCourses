@@ -14,7 +14,6 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -23,7 +22,6 @@ import lioncorps.org.mescourses.adapters.ListItemsAdapter;
 import lioncorps.org.mescourses.bean.Collection;
 import lioncorps.org.mescourses.bean.Liste;
 import lioncorps.org.mescourses.services.IServiceProvider;
-import lioncorps.org.mescourses.services.InMemoryServiceProvider;
 import lioncorps.org.mescourses.services.WebServiceProvider;
 
 public class MainActivity extends AppCompatActivity {
@@ -96,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
-        menu.findItem(R.id.menu_refresh).setVisible(false);
+        menu.findItem(R.id.menu_back).setVisible(false);
         optionsMenu=menu;
         return true;
     }
@@ -104,12 +102,19 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.menu_refresh:
+            case R.id.menu_back:
                if(displayListsMode.equals(DisplayMode.DISPLAY_MODE_ITEM)){
 
                    loadListes();
                }
                 return true;
+
+            case R.id.menu_refresh:
+                if(displayListsMode.equals(DisplayMode.DISPLAY_MODE_ITEM)){
+                    loadItems(currentListId);
+                }else{
+                    loadListes();
+                }
 
         }
         return super.onOptionsItemSelected(item);
@@ -120,8 +125,8 @@ public class MainActivity extends AppCompatActivity {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         displayListsMode =DisplayMode.DISPLAY_MODE_LIST;
-        if (optionsMenu!=null && optionsMenu.findItem(R.id.menu_refresh) !=null) {
-            optionsMenu.findItem(R.id.menu_refresh).setVisible(false);
+        if (optionsMenu!=null && optionsMenu.findItem(R.id.menu_back) !=null) {
+            optionsMenu.findItem(R.id.menu_back).setVisible(false);
         }
     }
 
@@ -131,8 +136,8 @@ public class MainActivity extends AppCompatActivity {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         displayListsMode =DisplayMode.DISPLAY_MODE_ITEM;
-        if (optionsMenu!=null && optionsMenu.findItem(R.id.menu_refresh) !=null) {
-            optionsMenu.findItem(R.id.menu_refresh).setVisible(true);
+        if (optionsMenu!=null && optionsMenu.findItem(R.id.menu_back) !=null) {
+            optionsMenu.findItem(R.id.menu_back).setVisible(true);
         }
     }
 

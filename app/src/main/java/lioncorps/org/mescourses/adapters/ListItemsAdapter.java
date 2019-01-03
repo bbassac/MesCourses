@@ -2,21 +2,16 @@ package lioncorps.org.mescourses.adapters;
 
 
 import android.content.Context;
-import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
-import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.squareup.picasso.Picasso;
 
 import lioncorps.org.mescourses.MainActivity;
 import lioncorps.org.mescourses.R;
 import lioncorps.org.mescourses.TextViewUtils;
-import lioncorps.org.mescourses.bean.Collection;
 import lioncorps.org.mescourses.bean.Item;
 import lioncorps.org.mescourses.bean.Liste;
 
@@ -76,7 +71,7 @@ public class ListItemsAdapter extends BaseAdapter  {
             TextViewUtils.unStrike(quantiteTextView);
         }
 
-        checkBox.setOnClickListener(new ClickListItemListener(context,displayActivity,item,idItemtextView,nameItemtextView,quantiteTextView));
+        checkBox.setOnClickListener(new ClickCheckboxItemListener(context,displayActivity,item,idItemtextView,nameItemtextView,quantiteTextView));
         return view;
     }
 

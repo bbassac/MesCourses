@@ -13,4 +13,6 @@ interface IServiceProvider {
     Liste addItemToListe(Long listId, String nom, String quantite);
 
     Collection addListe(String nom);
+
+    Liste updateItem(Long id, String nom, String quantite, boolean done);
 }

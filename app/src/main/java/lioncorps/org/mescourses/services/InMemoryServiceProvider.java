@@ -103,4 +103,21 @@ public class InMemoryServiceProvider implements IServiceProvider {
         internalCollection.addListe(l);
         return internalCollection;
     }
+
+    @Override
+    public Liste updateItem(Long id, String nom, String quantite, boolean done) {
+        for (Liste l : internalCollection.getListes()){
+            for (Item i : l.getItems()){
+                if (id.equals(i.getId())){
+                    i.setId(id);
+                    i.setNom(nom);
+                    i.setQuantite(quantite);
+                    i.setDone(done);
+                    return l;
+                }
+            }
+        }
+        return null;
+
+    }
 }
