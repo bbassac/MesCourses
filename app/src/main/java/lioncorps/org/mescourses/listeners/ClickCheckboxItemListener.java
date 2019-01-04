@@ -1,27 +1,20 @@
-package lioncorps.org.mescourses.adapters;
+package lioncorps.org.mescourses.listeners;
 
-import android.content.Context;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
-import lioncorps.org.mescourses.MainActivity;
 import lioncorps.org.mescourses.TextViewUtils;
 import lioncorps.org.mescourses.bean.Item;
 import lioncorps.org.mescourses.services.WebServiceProvider;
-
-class ClickCheckboxItemListener implements View.OnClickListener {
+public class ClickCheckboxItemListener implements View.OnClickListener {
     private Item currentItem;
-    private MainActivity displayActivity;
-    private Context context;
+
     TextView idItemtextView;
     TextView nameItemtextView;
     TextView quantiteTextView;
 
-
-    public ClickCheckboxItemListener(Context context, MainActivity displayActivity, Item item, TextView idItemtextView, TextView nameItemtextView, TextView quantiteTextView) {
-        this.displayActivity = displayActivity;
-        this.context = context;
+    public ClickCheckboxItemListener(Item item, TextView idItemtextView, TextView nameItemtextView, TextView quantiteTextView) {
         this.currentItem = item;
         this.idItemtextView = idItemtextView;
         this.nameItemtextView=nameItemtextView;

@@ -1,11 +1,13 @@
 package lioncorps.org.mescourses.services;
 
+import com.github.kevinsawicki.http.HttpRequest;
+
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import com.github.kevinsawicki.http.HttpRequest;
+
 import lioncorps.org.mescourses.bean.Collection;
 import lioncorps.org.mescourses.bean.Item;
 import lioncorps.org.mescourses.bean.Liste;

@@ -14,10 +14,12 @@ import lioncorps.org.mescourses.R;
 import lioncorps.org.mescourses.TextViewUtils;
 import lioncorps.org.mescourses.bean.Item;
 import lioncorps.org.mescourses.bean.Liste;
+import lioncorps.org.mescourses.listeners.ClickCheckboxItemListener;
+import lioncorps.org.mescourses.listeners.ClickListListener;
 
 public class ListItemsAdapter extends BaseAdapter  {
-    Liste liste = null; //GET FROM JSON
-    MainActivity displayActivity;
+    private Liste liste ;
+    private MainActivity displayActivity;
     private Context context;
 
     public ListItemsAdapter(Context exContext, Liste liste, MainActivity displayActivity) {
@@ -52,7 +54,7 @@ public class ListItemsAdapter extends BaseAdapter  {
             LayoutInflater inflater = LayoutInflater.from(context);
             view = inflater.inflate(R.layout.display_items, null);
             view.setClickable(true);
-            view.setOnClickListener(new ClickListListener(context, displayActivity, liste));
+            view.setOnClickListener(new ClickListListener(displayActivity, liste));
         }
         final TextView idItemtextView = view.findViewById(R.id.itemId);
         final TextView nameItemtextView = view.findViewById(R.id.nomItem);
@@ -71,7 +73,7 @@ public class ListItemsAdapter extends BaseAdapter  {
             TextViewUtils.unStrike(quantiteTextView);
         }
 
-        checkBox.setOnClickListener(new ClickCheckboxItemListener(context,displayActivity,item,idItemtextView,nameItemtextView,quantiteTextView));
+        checkBox.setOnClickListener(new ClickCheckboxItemListener(item,idItemtextView,nameItemtextView,quantiteTextView));
         return view;
     }
 

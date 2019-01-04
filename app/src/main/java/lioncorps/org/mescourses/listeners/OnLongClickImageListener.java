@@ -1,21 +1,18 @@
-package lioncorps.org.mescourses.adapters;
+package lioncorps.org.mescourses.listeners;
 
-import android.content.Context;
 import android.view.View;
 
 import lioncorps.org.mescourses.MainActivity;
 import lioncorps.org.mescourses.services.WebServiceProvider;
 
-class OnLongClickImageListener implements View.OnLongClickListener {
+public class OnLongClickImageListener implements View.OnLongClickListener {
 
-    private Context context;
     private Boolean isTemplate;
     private Long listId;
     private String nom;
     private MainActivity displayActivity;
 
-    public OnLongClickImageListener(Context context, MainActivity displayActivity, Long listId,String nom, Boolean template) {
-        this.context = context;
+    public OnLongClickImageListener(MainActivity displayActivity, Long listId,String nom, Boolean template) {
         this.listId = listId;
         this.isTemplate = template;
         this.nom = nom;

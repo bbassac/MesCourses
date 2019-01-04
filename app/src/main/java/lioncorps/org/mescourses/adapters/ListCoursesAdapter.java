@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -16,10 +15,12 @@ import lioncorps.org.mescourses.MainActivity;
 import lioncorps.org.mescourses.R;
 import lioncorps.org.mescourses.bean.Collection;
 import lioncorps.org.mescourses.bean.Liste;
+import lioncorps.org.mescourses.listeners.ClickListListener;
+import lioncorps.org.mescourses.listeners.OnLongClickImageListener;
 
 public class ListCoursesAdapter extends BaseAdapter  {
-    Collection collection = null; //GET FROM JSON
-    MainActivity displayActivity;
+    private Collection collection = null; //GET FROM JSON
+    private MainActivity displayActivity;
     private Context context;
 
     public ListCoursesAdapter(Context exContext, Collection collection, MainActivity displayActivity) {
@@ -58,7 +59,7 @@ public class ListCoursesAdapter extends BaseAdapter  {
         TextView nomtextView = view.findViewById(R.id.nom);
         nomtextView.setText(liste.getNom());
         nomtextView.setClickable(true);
-        nomtextView.setOnClickListener(new ClickListListener(context, displayActivity, liste));
+        nomtextView.setOnClickListener(new ClickListListener(displayActivity, liste));
 
         ImageView imgView = view.findViewById(R.id.lockedImg);
         if (liste.getTemplate()) {
@@ -68,7 +69,7 @@ public class ListCoursesAdapter extends BaseAdapter  {
         else {
             Picasso.get().load(R.mipmap.unlocked).into(imgView);
         }
-        imgView.setOnLongClickListener(new OnLongClickImageListener(context,displayActivity, liste.getId(),liste.getNom(), liste.getTemplate()));
+        imgView.setOnLongClickListener(new OnLongClickImageListener(displayActivity, liste.getId(),liste.getNom(), liste.getTemplate()));
 
         return view;
     }

@@ -1,20 +1,15 @@
-package lioncorps.org.mescourses.adapters;
+package lioncorps.org.mescourses.listeners;
 
-import android.content.Context;
 import android.view.View;
-import android.widget.Toast;
 
 import lioncorps.org.mescourses.MainActivity;
 import lioncorps.org.mescourses.bean.Liste;
-
-class ClickListListener implements View.OnClickListener {
+public class ClickListListener implements View.OnClickListener {
     private Liste currentListe;
     private MainActivity displayActivity;
-    private Context context;
 
-    public ClickListListener(Context context, MainActivity displayActivity, Liste liste) {
+    public ClickListListener(MainActivity displayActivity, Liste liste) {
         this.displayActivity = displayActivity;
-        this.context = context;
         this.currentListe = liste;
     }
 
