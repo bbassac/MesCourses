@@ -29,7 +29,7 @@ public class ListCoursesAdapter extends BaseAdapter  {
         this.collection = collection;
         this.displayActivity = displayActivity;
 
-    } 
+    }   
 
     @Override
     public int getCount() {
