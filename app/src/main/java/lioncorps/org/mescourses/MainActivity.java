@@ -1,5 +1,6 @@
 package lioncorps.org.mescourses;
 
+import android.app.ActionBar;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -25,6 +26,7 @@ import lioncorps.org.mescourses.services.IServiceProvider;
 import lioncorps.org.mescourses.services.WebServiceProvider;
 
 public class MainActivity extends AppCompatActivity {
+    private static final String TITLE_APP = "B&Y";
     IServiceProvider serviceProvider = WebServiceProvider.getInstance();
     Collection collection;
     Liste currentList;
@@ -96,6 +98,7 @@ public class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu, menu);
         menu.findItem(R.id.menu_back).setVisible(false);
         optionsMenu=menu;
+        displayTitle(TITLE_APP);
         return true;
     }
 
@@ -131,6 +134,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void loadItems(Long id){
+
         currentListId=id;
         new ListeItemsLoadingTask().execute();
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
@@ -188,11 +192,17 @@ public class MainActivity extends AppCompatActivity {
         final ListItemsAdapter adapter = new ListItemsAdapter(getApplicationContext(), currentList, MainActivity.this);
         ListView list = findViewById(R.id.list);
         list.setAdapter(adapter);
+        displayTitle(TITLE_APP +" : " + currentList.getNom());
     }
     private void reloadListeCoursesView() {
         final ListCoursesAdapter adapter = new ListCoursesAdapter(getApplicationContext(), collection, MainActivity.this);
         ListView list = findViewById(R.id.list);
         list.setAdapter(adapter);
+        displayTitle(TITLE_APP);
+    }
+
+    private void displayTitle(String title){
+        setTitle(title);
     }
 
 }
