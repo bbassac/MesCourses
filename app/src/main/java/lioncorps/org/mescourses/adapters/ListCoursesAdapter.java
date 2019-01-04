@@ -68,6 +68,7 @@ public class ListCoursesAdapter extends BaseAdapter  {
         else {
             Picasso.get().load(R.mipmap.unlocked).into(imgView);
         }
+        imgView.setOnLongClickListener(new OnLongClickImageListener(context,displayActivity, liste.getId(),liste.getNom(), liste.getTemplate()));
 
         return view;
     }

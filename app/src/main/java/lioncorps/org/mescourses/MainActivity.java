@@ -1,6 +1,5 @@
 package lioncorps.org.mescourses;
 
-import android.app.ActionBar;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -22,12 +21,11 @@ import lioncorps.org.mescourses.adapters.ListCoursesAdapter;
 import lioncorps.org.mescourses.adapters.ListItemsAdapter;
 import lioncorps.org.mescourses.bean.Collection;
 import lioncorps.org.mescourses.bean.Liste;
-import lioncorps.org.mescourses.services.IServiceProvider;
 import lioncorps.org.mescourses.services.WebServiceProvider;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TITLE_APP = "B&Y";
-    IServiceProvider serviceProvider = WebServiceProvider.getInstance();
+
     Collection collection;
     Liste currentList;
     Long currentListId;
@@ -76,10 +74,10 @@ public class MainActivity extends AppCompatActivity {
                     ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
                     if (displayListsMode.equals(DisplayMode.DISPLAY_MODE_LIST)){
                         Toast.makeText(MainActivity.this,"saving " + result.get(0),Toast.LENGTH_LONG).show();
-                        collection = serviceProvider.addListe(result.get(0));
+                        collection = WebServiceProvider.getInstance().addListe(result.get(0));
                         reloadListeCoursesView();
                     }else if (displayListsMode.equals(DisplayMode.DISPLAY_MODE_ITEM)) {
-                        currentList = serviceProvider.addItemToListe(currentListId, result.get(0), "");
+                        currentList = WebServiceProvider.getInstance().addItemToListe(currentListId, result.get(0), "");
                         reloadListItemsView();
                     }
                 }
@@ -155,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected Collection doInBackground(String... args) {
-            collection =  serviceProvider.loadCollection();
+            collection =  WebServiceProvider.getInstance().loadCollection();
             return collection;
         }
 
@@ -178,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected Liste doInBackground(String... args) {
 
-            currentList = serviceProvider.loadListe(currentListId);
+            currentList = WebServiceProvider.getInstance().loadListe(currentListId);
             return currentList;
         }
 

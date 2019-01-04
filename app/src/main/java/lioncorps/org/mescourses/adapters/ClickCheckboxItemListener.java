@@ -1,7 +1,6 @@
 package lioncorps.org.mescourses.adapters;
 
 import android.content.Context;
-import android.graphics.Paint;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.TextView;
@@ -9,8 +8,6 @@ import android.widget.TextView;
 import lioncorps.org.mescourses.MainActivity;
 import lioncorps.org.mescourses.TextViewUtils;
 import lioncorps.org.mescourses.bean.Item;
-import lioncorps.org.mescourses.bean.Liste;
-import lioncorps.org.mescourses.services.IServiceProvider;
 import lioncorps.org.mescourses.services.WebServiceProvider;
 
 class ClickCheckboxItemListener implements View.OnClickListener {
