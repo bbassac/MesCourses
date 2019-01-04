@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.StrictMode;
 import android.speech.RecognizerIntent;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -43,6 +44,22 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         loadListes();
         manageMicButton();
+        manageRefreshSweep();
+    }
+
+    private void manageRefreshSweep() {
+        final SwipeRefreshLayout  swipeRefreshLayout = findViewById(R.id.swipeid);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if(displayListsMode.equals(DisplayMode.DISPLAY_MODE_ITEM)){
+                    loadItems(currentListId);
+                }else{
+                    loadListes();
+                }
+                swipeRefreshLayout.setRefreshing(false);
+
+            }});
     }
 
     private void manageMicButton() {
