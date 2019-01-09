@@ -2,15 +2,22 @@ package lioncorps.org.mescourses;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.graphics.Canvas;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.speech.RecognizerIntent;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,11 +28,13 @@ import java.util.Locale;
 
 import lioncorps.org.mescourses.adapters.ListCoursesAdapter;
 import lioncorps.org.mescourses.adapters.ListItemsAdapter;
+import lioncorps.org.mescourses.adapters.ListeViewHolder;
+import lioncorps.org.mescourses.adapters.RecyclerItemTouchHelper;
 import lioncorps.org.mescourses.bean.Collection;
 import lioncorps.org.mescourses.bean.Liste;
 import lioncorps.org.mescourses.services.WebServiceProvider;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements RecyclerItemTouchHelper.RecyclerItemTouchHelperListener{
     private static final String TITLE_APP = "B&Y";
 
     Collection collection;
@@ -35,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
     DisplayMode displayListsMode;
     ListCoursesAdapter coursesAdapter;
     ListItemsAdapter itemsAdapter;
+    private SwipeRefreshLayout coordinatorLayout;
     private static final int REQ_CODE_SPEECH_INPUT = 100;
     private enum DisplayMode{
         DISPLAY_MODE_LIST,
@@ -48,6 +58,8 @@ public class MainActivity extends AppCompatActivity {
         loadListes();
         manageMicButton();
         manageRefreshSweep();
+
+        coordinatorLayout = findViewById(R.id.swipeid);
     }
 
     private void manageRefreshSweep() {
@@ -209,21 +221,54 @@ public class MainActivity extends AppCompatActivity {
 
     private void reloadListItemsView() {
         itemsAdapter = new ListItemsAdapter( currentList, MainActivity.this);
-        RecyclerView list = findViewById(R.id.list);
-        list.setAdapter(itemsAdapter);
-        list.setLayoutManager(new LinearLayoutManager(this));
+        buildView(itemsAdapter);
         displayTitle(TITLE_APP +" : " + currentList.getNom());
     }
+
     private void reloadListeCoursesView() {
         coursesAdapter = new ListCoursesAdapter(collection, MainActivity.this);
-        RecyclerView list = findViewById(R.id.list);
-        list.setAdapter(coursesAdapter);
-        list.setLayoutManager(new LinearLayoutManager(this));
+        buildView(coursesAdapter);
         displayTitle(TITLE_APP);
     }
 
+    private void buildView(RecyclerView.Adapter adapter) {
+        RecyclerView list = findViewById(R.id.list);
+        list.setAdapter(adapter);
+        list.setLayoutManager(new LinearLayoutManager(this));
+        list.setItemAnimator(new DefaultItemAnimator());
+        list.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+        ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new RecyclerItemTouchHelper(0, ItemTouchHelper.RIGHT, this);
+
+        // attaching the touch helper to recycler view
+        new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(list);
+    }
+
+
+
     private void displayTitle(String title){
         setTitle(title);
+    }
+
+    @Override
+    public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position) {
+
+        if (viewHolder instanceof ListeViewHolder) {
+            // get the removed item name to display it in snack bar
+            Liste liste = collection.getListes().get(viewHolder.getAdapterPosition());
+
+                String name = liste.getNom();
+
+                // backup of removed item for undo purpose
+                final Liste deletedItem = collection.getListes().get(viewHolder.getAdapterPosition());
+                final int deletedIndex = viewHolder.getAdapterPosition();
+
+                // remove the item from recycler view
+                coursesAdapter.removeItem(coordinatorLayout,viewHolder.getAdapterPosition(), deletedItem, deletedIndex);
+
+
+
+        }
+
     }
 
 }

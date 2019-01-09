@@ -1,7 +1,10 @@
 package lioncorps.org.mescourses.adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +20,7 @@ import lioncorps.org.mescourses.bean.Collection;
 import lioncorps.org.mescourses.bean.Liste;
 import lioncorps.org.mescourses.listeners.ClickListListener;
 import lioncorps.org.mescourses.listeners.OnLongClickImageListener;
+import lioncorps.org.mescourses.services.WebServiceProvider;
 
 public class ListCoursesAdapter extends RecyclerView.Adapter<ListeViewHolder> {
 
@@ -68,4 +72,31 @@ public class ListCoursesAdapter extends RecyclerView.Adapter<ListeViewHolder> {
     }
 
 
+    public void removeItem(final SwipeRefreshLayout coordinatorLayout, int adapterPosition, final Liste deletedItem, final int deletedIndex) {
+        if (!collection.getListes().get(adapterPosition).getTemplate()) {
+            Liste item = collection.getListes().get(adapterPosition);
+            WebServiceProvider.getInstance().deleteListe(item.getId());
+            collection.getListes().remove(adapterPosition);
+            notifyItemRemoved(adapterPosition);
+            // showing snack bar with Undo option
+            Snackbar snackbar = Snackbar.make(coordinatorLayout, item.getNom() + " removed from cart!", Snackbar.LENGTH_LONG);
+            snackbar.setAction("UNDO", new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    // undo is selected, restore the deleted item
+                    restoreItem(deletedItem, deletedIndex);
+                }
+            });
+            snackbar.setActionTextColor(Color.YELLOW);
+            snackbar.show();
+        }
+        displayActivity.loadListes();
+    }
+
+    public void restoreItem(Liste item, int position) {
+        collection.getListes().add(position,item);
+        notifyItemInserted(position);
+        displayActivity.loadListes();
+    }
 }

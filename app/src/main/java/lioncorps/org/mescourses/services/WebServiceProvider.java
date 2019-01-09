@@ -133,6 +133,18 @@ public class WebServiceProvider  {
 
     }
 
+    public Collection deleteListe (Long listId){
+        HttpRequest httpRequest = HttpRequest.delete(url+"/liste/"+listId);
+        String stringJson =  httpRequest.body();
+
+        try {
+            Collection internalCollection =  mapper.readValue(mapper.getJsonFactory().createJsonParser(new ByteArrayInputStream(stringJson.getBytes("UTF-8"))), Collection.class);
+            return internalCollection;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }return null;
+    }
+
 
     public Collection updateListe(Long id, String nom, Boolean isTemplate) {
 

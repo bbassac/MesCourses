@@ -3,6 +3,7 @@ package lioncorps.org.mescourses.adapters;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import lioncorps.org.mescourses.R;
@@ -15,6 +16,7 @@ public class ListeViewHolder extends RecyclerView.ViewHolder {
     TextView nomtextView;
     TextView idtextView;
     ImageView imgView;
+    RelativeLayout viewForeground;
 
     // We also create a constructor that accepts the entire item row
     // and does the view lookups to find each subview
@@ -26,5 +28,6 @@ public class ListeViewHolder extends RecyclerView.ViewHolder {
         nomtextView = itemView.findViewById(R.id.nom);
         idtextView = itemView.findViewById(R.id.listId);
         imgView = itemView.findViewById(R.id.lockedImg);
+        viewForeground = itemView.findViewById(R.id.view_foreground);
     }
 }
