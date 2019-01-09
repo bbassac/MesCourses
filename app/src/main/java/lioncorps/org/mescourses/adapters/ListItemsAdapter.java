@@ -2,6 +2,8 @@ package lioncorps.org.mescourses.adapters;
 
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,49 +19,38 @@ import lioncorps.org.mescourses.bean.Liste;
 import lioncorps.org.mescourses.listeners.ClickCheckboxItemListener;
 import lioncorps.org.mescourses.listeners.ClickListListener;
 
-public class ListItemsAdapter extends BaseAdapter  {
+public class ListItemsAdapter extends RecyclerView.Adapter<ItemViewHolder> {
     private Liste liste ;
     private MainActivity displayActivity;
-    private Context context;
 
-    public ListItemsAdapter(Context exContext, Liste liste, MainActivity displayActivity) {
+    public ListItemsAdapter(Liste liste, MainActivity displayActivity) {
         super();
-        context = exContext;
         this.liste = liste;
         this.displayActivity = displayActivity;
 
     }
 
+    @NonNull
     @Override
-    public int getCount() {
-        return liste.getItems().size();
+    public ItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        Context context = parent.getContext();
+        LayoutInflater inflater = LayoutInflater.from(context);
+
+        // Inflate the custom layout
+        View view = inflater.inflate(R.layout.display_items, parent, false);
+        view.setOnClickListener(new ClickListListener(displayActivity, liste));
+        // Return a new holder instance
+        ItemViewHolder viewHolder = new ItemViewHolder(view);
+        return viewHolder;
     }
 
     @Override
-    public Item getItem(int arg0) {
-        return liste.getItems().get(arg0);
-    }
-
-    @Override
-    public long getItemId(int arg0) {
-        return liste.getItems().get(arg0).getId();
-    }
-
-
-    @Override
-    public View getView(int index, View view, ViewGroup viewGroup) {
-
-        Item item = this.liste.getItems().get(index);
-        if (view == null) {
-            LayoutInflater inflater = LayoutInflater.from(context);
-            view = inflater.inflate(R.layout.display_items, null);
-            view.setClickable(true);
-            view.setOnClickListener(new ClickListListener(displayActivity, liste));
-        }
-        final TextView idItemtextView = view.findViewById(R.id.itemId);
-        final TextView nameItemtextView = view.findViewById(R.id.nomItem);
-        final TextView quantiteTextView = view.findViewById(R.id.quantiteItem);
-        final CheckBox checkBox = view.findViewById(R.id.doneItem);
+    public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
+        Item item = liste.getItems().get(position);
+        final TextView idItemtextView = holder.idItemtextView;
+        final TextView nameItemtextView = holder.nameItemtextView;
+        final TextView quantiteTextView = holder.quantiteTextView;
+        final CheckBox checkBox = holder.checkBox;
 
         nameItemtextView.setText(item.getNom());
         quantiteTextView.setText(item.getQuantite());
@@ -74,10 +65,12 @@ public class ListItemsAdapter extends BaseAdapter  {
         }
 
         checkBox.setOnClickListener(new ClickCheckboxItemListener(item,idItemtextView,nameItemtextView,quantiteTextView));
-        return view;
     }
 
-
+    @Override
+    public int getItemCount() {
+        return liste.getItems().size();
+    }
 }
 
 

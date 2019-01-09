@@ -12,10 +12,11 @@
         android:layout_height="match_parent"
         android:layout_width="match_parent">
 
-    <ListView
-        android:id="@+id/list"
-        android:layout_width="match_parent"
-        android:layout_height="445dp" />
+        <android.support.v7.widget.RecyclerView
+            app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+            android:id="@+id/list"
+            android:layout_width="match_parent"
+            android:layout_height="445dp" />
 
 
         <android.support.design.widget.FloatingActionButton

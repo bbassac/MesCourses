@@ -1,11 +1,11 @@
 package lioncorps.org.mescourses.adapters;
 
-
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -18,50 +18,40 @@ import lioncorps.org.mescourses.bean.Liste;
 import lioncorps.org.mescourses.listeners.ClickListListener;
 import lioncorps.org.mescourses.listeners.OnLongClickImageListener;
 
-public class ListCoursesAdapter extends BaseAdapter  {
+public class ListCoursesAdapter extends RecyclerView.Adapter<ListeViewHolder> {
+
     private Collection collection = null; //GET FROM JSON
     private MainActivity displayActivity;
-    private Context context;
 
-    public ListCoursesAdapter(Context exContext, Collection collection, MainActivity displayActivity) {
+    public ListCoursesAdapter(Collection collection, MainActivity displayActivity) {
         super();
-        context = exContext;
         this.collection = collection;
         this.displayActivity = displayActivity;
 
-    }     
-
+    }
+    @NonNull
     @Override
-    public int getCount() {
-        return collection.getListes().size();
+    public ListeViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        Context context = parent.getContext();
+        LayoutInflater inflater = LayoutInflater.from(context);
+
+        // Inflate the custom layout
+        View view = inflater.inflate(R.layout.display_lists, parent, false);
+        // Return a new holder instance
+        ListeViewHolder viewHolder = new ListeViewHolder(view);
+        return viewHolder;
     }
 
     @Override
-    public Liste getItem(int arg0) {
-        return collection.getListes().get(arg0);
-    }
+    public void onBindViewHolder(@NonNull ListeViewHolder holder, int position) {
+        Liste liste = collection.getListes().get(position);
 
-    @Override
-    public long getItemId(int arg0) {
-        return collection.getListes().get(arg0).getId();
-    }
-
-
-    @Override
-    public View getView(int index, View view, ViewGroup viewGroup) {
-
-        Liste liste = collection.getListes().get(index);
-        if (view == null) {
-            LayoutInflater inflater = LayoutInflater.from(context);
-            view = inflater.inflate(R.layout.display_lists, null);
-        }
-
-        TextView nomtextView = view.findViewById(R.id.nom);
+        TextView nomtextView = holder.nomtextView;
         nomtextView.setText(liste.getNom());
         nomtextView.setClickable(true);
         nomtextView.setOnClickListener(new ClickListListener(displayActivity, liste));
 
-        ImageView imgView = view.findViewById(R.id.lockedImg);
+        ImageView imgView = holder.imgView;
         if (liste.getTemplate()) {
 
             Picasso.get().load(R.mipmap.locked).into(imgView);
@@ -70,12 +60,12 @@ public class ListCoursesAdapter extends BaseAdapter  {
             Picasso.get().load(R.mipmap.unlocked).into(imgView);
         }
         imgView.setOnLongClickListener(new OnLongClickImageListener(displayActivity, liste.getId(),liste.getNom(), liste.getTemplate()));
+    }
 
-        return view;
+    @Override
+    public int getItemCount() {
+        return collection.getListes().size();
     }
 
 
 }
-
-
-

@@ -9,10 +9,11 @@ import android.speech.RecognizerIntent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -32,6 +33,8 @@ public class MainActivity extends AppCompatActivity {
     Long currentListId;
     Menu optionsMenu;
     DisplayMode displayListsMode;
+    ListCoursesAdapter coursesAdapter;
+    ListItemsAdapter itemsAdapter;
     private static final int REQ_CODE_SPEECH_INPUT = 100;
     private enum DisplayMode{
         DISPLAY_MODE_LIST,
@@ -93,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(MainActivity.this,"saving " + result.get(0),Toast.LENGTH_LONG).show();
                         collection = WebServiceProvider.getInstance().addListe(result.get(0));
                         reloadListeCoursesView();
+
                     }else if (displayListsMode.equals(DisplayMode.DISPLAY_MODE_ITEM)) {
                         currentList = WebServiceProvider.getInstance().addItemToListe(currentListId, result.get(0), "");
                         reloadListItemsView();
@@ -204,15 +208,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void reloadListItemsView() {
-        final ListItemsAdapter adapter = new ListItemsAdapter(getApplicationContext(), currentList, MainActivity.this);
-        ListView list = findViewById(R.id.list);
-        list.setAdapter(adapter);
+        itemsAdapter = new ListItemsAdapter( currentList, MainActivity.this);
+        RecyclerView list = findViewById(R.id.list);
+        list.setAdapter(itemsAdapter);
+        list.setLayoutManager(new LinearLayoutManager(this));
         displayTitle(TITLE_APP +" : " + currentList.getNom());
     }
     private void reloadListeCoursesView() {
-        final ListCoursesAdapter adapter = new ListCoursesAdapter(getApplicationContext(), collection, MainActivity.this);
-        ListView list = findViewById(R.id.list);
-        list.setAdapter(adapter);
+        coursesAdapter = new ListCoursesAdapter(collection, MainActivity.this);
+        RecyclerView list = findViewById(R.id.list);
+        list.setAdapter(coursesAdapter);
+        list.setLayoutManager(new LinearLayoutManager(this));
         displayTitle(TITLE_APP);
     }
 
