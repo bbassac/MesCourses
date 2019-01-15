@@ -62,12 +62,11 @@ public class WebServiceProvider  {
         return null;
     }
 
-
-    public Liste addItemToListe(Long listId, String nom, String quantite) {
+    public Liste addItemToListe(Long listId, String nom, String quantite,boolean isDone ){
         Item item = new Item();
         item.setNom(nom);
         item.setQuantite(quantite);
-        item.setDone(false);
+        item.setDone(isDone);
         try {
             String jsonObject  = mapper.writer().writeValueAsString(item);
             HttpRequest httpRequest = new HttpRequest(url+"/item/"+listId,"POST");
@@ -83,6 +82,10 @@ public class WebServiceProvider  {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public Liste addItemToListe(Long listId, String nom, String quantite) {
+        return addItemToListe(listId,nom,quantite,false);
     }
 
 
@@ -139,6 +142,19 @@ public class WebServiceProvider  {
 
         try {
             Collection internalCollection =  mapper.readValue(mapper.getJsonFactory().createJsonParser(new ByteArrayInputStream(stringJson.getBytes("UTF-8"))), Collection.class);
+            return internalCollection;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }return null;
+    }
+
+    public Liste deleteItem (Long listId,Long itemId){
+        HttpRequest httpRequest = new HttpRequest(url+"/item/"+listId+"/"+itemId,"DELETE");
+        httpRequest.contentType(HttpRequest.CONTENT_TYPE_JSON, HttpRequest.CHARSET_UTF8);
+        String stringJson =  httpRequest.body();
+
+        try {
+            Liste internalCollection =  mapper.readValue(mapper.getJsonFactory().createJsonParser(new ByteArrayInputStream(stringJson.getBytes("UTF-8"))), Liste.class);
             return internalCollection;
         } catch (IOException e) {
             e.printStackTrace();

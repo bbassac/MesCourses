@@ -21,6 +21,7 @@ import lioncorps.org.mescourses.bean.Liste;
 import lioncorps.org.mescourses.listeners.ClickListListener;
 import lioncorps.org.mescourses.listeners.OnLongClickImageListener;
 import lioncorps.org.mescourses.services.WebServiceProvider;
+import lioncorps.org.mescourses.viewholders.ListeViewHolder;
 
 public class ListCoursesAdapter extends RecyclerView.Adapter<ListeViewHolder> {
 
@@ -42,20 +43,19 @@ public class ListCoursesAdapter extends RecyclerView.Adapter<ListeViewHolder> {
         // Inflate the custom layout
         View view = inflater.inflate(R.layout.display_lists, parent, false);
         // Return a new holder instance
-        ListeViewHolder viewHolder = new ListeViewHolder(view);
-        return viewHolder;
+        return new ListeViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ListeViewHolder holder, int position) {
         Liste liste = collection.getListes().get(position);
 
-        TextView nomtextView = holder.nomtextView;
+        TextView nomtextView = holder.getNomtextView();
         nomtextView.setText(liste.getNom());
         nomtextView.setClickable(true);
         nomtextView.setOnClickListener(new ClickListListener(displayActivity, liste));
 
-        ImageView imgView = holder.imgView;
+        ImageView imgView = holder.getImgView();
         if (liste.getTemplate()) {
 
             Picasso.get().load(R.mipmap.locked).into(imgView);
@@ -94,7 +94,7 @@ public class ListCoursesAdapter extends RecyclerView.Adapter<ListeViewHolder> {
         displayActivity.loadListes();
     }
 
-    public void restoreItem(Liste item, int position) {
+    private void restoreItem(Liste item, int position) {
         collection.getListes().add(position,item);
         notifyItemInserted(position);
         displayActivity.loadListes();

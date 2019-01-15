@@ -2,15 +2,10 @@ package lioncorps.org.mescourses;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.speech.RecognizerIntent;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -28,28 +23,26 @@ import java.util.Locale;
 
 import lioncorps.org.mescourses.adapters.ListCoursesAdapter;
 import lioncorps.org.mescourses.adapters.ListItemsAdapter;
-import lioncorps.org.mescourses.adapters.ListeViewHolder;
+import lioncorps.org.mescourses.asynctask.ListeCoursesLoadingTask;
+import lioncorps.org.mescourses.asynctask.ListeItemsLoadingTask;
+import lioncorps.org.mescourses.viewholders.ListeViewHolder;
 import lioncorps.org.mescourses.adapters.RecyclerItemTouchHelper;
 import lioncorps.org.mescourses.bean.Collection;
+import lioncorps.org.mescourses.bean.Item;
 import lioncorps.org.mescourses.bean.Liste;
 import lioncorps.org.mescourses.services.WebServiceProvider;
 
 public class MainActivity extends AppCompatActivity implements RecyclerItemTouchHelper.RecyclerItemTouchHelperListener{
     private static final String TITLE_APP = "B&Y";
-
-    Collection collection;
-    Liste currentList;
+    private static final int REQ_CODE_SPEECH_INPUT = 100;
+    public DisplayMode displayListsMode;
+    public Collection collection;
+    public Liste currentList;
     Long currentListId;
     Menu optionsMenu;
-    DisplayMode displayListsMode;
     ListCoursesAdapter coursesAdapter;
     ListItemsAdapter itemsAdapter;
     private SwipeRefreshLayout coordinatorLayout;
-    private static final int REQ_CODE_SPEECH_INPUT = 100;
-    private enum DisplayMode{
-        DISPLAY_MODE_LIST,
-        DISPLAY_MODE_ITEM
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +89,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
             }
         });
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -119,10 +113,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
 
         }
     }
-
-
-
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -155,7 +145,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
     }
 
     public void loadListes(){
-        new ListeCoursesLoadingTask().execute();
+        new ListeCoursesLoadingTask(MainActivity.this).execute();
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         displayListsMode =DisplayMode.DISPLAY_MODE_LIST;
@@ -167,7 +157,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
     public void loadItems(Long id){
 
         currentListId=id;
-        new ListeItemsLoadingTask().execute();
+        new ListeItemsLoadingTask(MainActivity.this,currentListId).execute();
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         displayListsMode =DisplayMode.DISPLAY_MODE_ITEM;
@@ -176,56 +166,13 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
         }
     }
 
-    private class ListeCoursesLoadingTask extends AsyncTask<String, String, Collection> {
-
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            }
-
-        @Override
-        protected Collection doInBackground(String... args) {
-            collection =  WebServiceProvider.getInstance().loadCollection();
-            return collection;
-        }
-
-        @Override
-        protected void onPostExecute(Collection json) {
-            reloadListeCoursesView();
-        }
-    }
-
-
-
-    private class ListeItemsLoadingTask extends AsyncTask<String, String, Liste> {
-
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
-        protected Liste doInBackground(String... args) {
-
-            currentList = WebServiceProvider.getInstance().loadListe(currentListId);
-            return currentList;
-        }
-
-        @Override
-        protected void onPostExecute(Liste json) {
-                reloadListItemsView();
-        }
-    }
-
-    private void reloadListItemsView() {
+    public void reloadListItemsView() {
         itemsAdapter = new ListItemsAdapter( currentList, MainActivity.this);
         buildView(itemsAdapter);
         displayTitle(TITLE_APP +" : " + currentList.getNom());
     }
 
-    private void reloadListeCoursesView() {
+    public void reloadListeCoursesView() {
         coursesAdapter = new ListCoursesAdapter(collection, MainActivity.this);
         buildView(coursesAdapter);
         displayTitle(TITLE_APP);
@@ -243,8 +190,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
         new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(list);
     }
 
-
-
     private void displayTitle(String title){
         setTitle(title);
     }
@@ -253,22 +198,30 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position) {
 
         if (viewHolder instanceof ListeViewHolder) {
-            // get the removed item name to display it in snack bar
-            Liste liste = collection.getListes().get(viewHolder.getAdapterPosition());
-
-                String name = liste.getNom();
-
+            if (displayListsMode.equals(DisplayMode.DISPLAY_MODE_LIST)) {
                 // backup of removed item for undo purpose
                 final Liste deletedItem = collection.getListes().get(viewHolder.getAdapterPosition());
                 final int deletedIndex = viewHolder.getAdapterPosition();
 
                 // remove the item from recycler view
-                coursesAdapter.removeItem(coordinatorLayout,viewHolder.getAdapterPosition(), deletedItem, deletedIndex);
+                coursesAdapter.removeItem(coordinatorLayout, viewHolder.getAdapterPosition(), deletedItem, deletedIndex);
+            }
+        }else if (displayListsMode.equals(DisplayMode.DISPLAY_MODE_ITEM)){
+            final Item deletedItem = currentList.getItems().get(viewHolder.getAdapterPosition());
+            final int deletedIndex = viewHolder.getAdapterPosition();
 
-
-
+            // remove the item from recycler view
+            itemsAdapter.removeItem(coordinatorLayout, viewHolder.getAdapterPosition(), deletedItem, deletedIndex);
         }
 
     }
+
+    public enum DisplayMode{
+        DISPLAY_MODE_LIST,
+        DISPLAY_MODE_ITEM
+    }
+
+
+
 
 }
