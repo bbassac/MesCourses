@@ -72,7 +72,7 @@ public class ListCoursesAdapter extends RecyclerView.Adapter<ListeViewHolder> {
     }
 
 
-    public void removeItem(final SwipeRefreshLayout coordinatorLayout, int adapterPosition, final Liste deletedItem, final int deletedIndex) {
+    public void removeList(final SwipeRefreshLayout coordinatorLayout, int adapterPosition, final Liste deletedItem, final int deletedIndex) {
         if (!collection.getListes().get(adapterPosition).getTemplate()) {
             Liste item = collection.getListes().get(adapterPosition);
             WebServiceProvider.getInstance().deleteListe(item.getId());
@@ -85,7 +85,7 @@ public class ListCoursesAdapter extends RecyclerView.Adapter<ListeViewHolder> {
                 public void onClick(View view) {
 
                     // undo is selected, restore the deleted item
-                    restoreItem(deletedItem, deletedIndex);
+                    restoreList(deletedItem, deletedIndex);
                 }
             });
             snackbar.setActionTextColor(Color.YELLOW);
@@ -94,7 +94,7 @@ public class ListCoursesAdapter extends RecyclerView.Adapter<ListeViewHolder> {
         displayActivity.loadListes();
     }
 
-    private void restoreItem(Liste item, int position) {
+    private void restoreList(Liste item, int position) {
         collection.getListes().add(position,item);
         notifyItemInserted(position);
         displayActivity.loadListes();

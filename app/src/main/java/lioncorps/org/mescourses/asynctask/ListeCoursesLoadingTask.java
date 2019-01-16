@@ -8,7 +8,7 @@ import lioncorps.org.mescourses.services.WebServiceProvider;
 
 public class ListeCoursesLoadingTask extends AsyncTask<String, String, Collection> {
 
-    MainActivity activity;
+    private MainActivity activity;
 
     public ListeCoursesLoadingTask(MainActivity activity){
         this.activity = activity;

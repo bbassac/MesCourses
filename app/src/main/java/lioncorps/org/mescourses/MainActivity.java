@@ -38,10 +38,10 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
     public DisplayMode displayListsMode;
     public Collection collection;
     public Liste currentList;
-    Long currentListId;
-    Menu optionsMenu;
-    ListCoursesAdapter coursesAdapter;
-    ListItemsAdapter itemsAdapter;
+    private Long currentListId;
+    private Menu optionsMenu;
+    private ListCoursesAdapter coursesAdapter;
+    private ListItemsAdapter itemsAdapter;
     private SwipeRefreshLayout coordinatorLayout;
 
     @Override
@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if(displayListsMode.equals(DisplayMode.DISPLAY_MODE_ITEM)){
+                if(isDisplayModeItem()){
                     loadItems(currentListId);
                 }else{
                     loadListes();
@@ -68,6 +68,14 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
                 swipeRefreshLayout.setRefreshing(false);
 
             }});
+    }
+
+    private boolean isDisplayModeItem() {
+        return displayListsMode.equals(DisplayMode.DISPLAY_MODE_ITEM);
+    }
+
+    private boolean isDisplayModeList() {
+        return displayListsMode.equals(DisplayMode.DISPLAY_MODE_LIST);
     }
 
     private void manageMicButton() {
@@ -98,12 +106,12 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
             case REQ_CODE_SPEECH_INPUT: {
                 if (resultCode == RESULT_OK && null != data) {
                     ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-                    if (displayListsMode.equals(DisplayMode.DISPLAY_MODE_LIST)){
+                    if (isDisplayModeList()){
                         Toast.makeText(MainActivity.this,"saving " + result.get(0),Toast.LENGTH_LONG).show();
                         collection = WebServiceProvider.getInstance().addListe(result.get(0));
                         reloadListeCoursesView();
 
-                    }else if (displayListsMode.equals(DisplayMode.DISPLAY_MODE_ITEM)) {
+                    }else if (isDisplayModeItem()) {
                         currentList = WebServiceProvider.getInstance().addItemToListe(currentListId, result.get(0), "");
                         reloadListItemsView();
                     }
@@ -119,7 +127,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
         getMenuInflater().inflate(R.menu.menu, menu);
         menu.findItem(R.id.menu_back).setVisible(false);
         optionsMenu=menu;
-        displayTitle(TITLE_APP);
+        setTitle(TITLE_APP);
         return true;
     }
 
@@ -127,14 +135,13 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_back:
-               if(displayListsMode.equals(DisplayMode.DISPLAY_MODE_ITEM)){
-
+               if(isDisplayModeItem()){
                    loadListes();
                }
                 return true;
 
             case R.id.menu_refresh:
-                if(displayListsMode.equals(DisplayMode.DISPLAY_MODE_ITEM)){
+                if(isDisplayModeItem()){
                     loadItems(currentListId);
                 }else{
                     loadListes();
@@ -169,13 +176,13 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
     public void reloadListItemsView() {
         itemsAdapter = new ListItemsAdapter( currentList, MainActivity.this);
         buildView(itemsAdapter);
-        displayTitle(TITLE_APP +" : " + currentList.getNom());
+        setTitle(TITLE_APP +" : " + currentList.getNom());
     }
 
     public void reloadListeCoursesView() {
         coursesAdapter = new ListCoursesAdapter(collection, MainActivity.this);
         buildView(coursesAdapter);
-        displayTitle(TITLE_APP);
+        setTitle(TITLE_APP);
     }
 
     private void buildView(RecyclerView.Adapter adapter) {
@@ -190,23 +197,21 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
         new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(list);
     }
 
-    private void displayTitle(String title){
-        setTitle(title);
-    }
+
 
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position) {
 
         if (viewHolder instanceof ListeViewHolder) {
-            if (displayListsMode.equals(DisplayMode.DISPLAY_MODE_LIST)) {
+            if (isDisplayModeList()) {
                 // backup of removed item for undo purpose
                 final Liste deletedItem = collection.getListes().get(viewHolder.getAdapterPosition());
                 final int deletedIndex = viewHolder.getAdapterPosition();
 
                 // remove the item from recycler view
-                coursesAdapter.removeItem(coordinatorLayout, viewHolder.getAdapterPosition(), deletedItem, deletedIndex);
+                coursesAdapter.removeList(coordinatorLayout, viewHolder.getAdapterPosition(), deletedItem, deletedIndex);
             }
-        }else if (displayListsMode.equals(DisplayMode.DISPLAY_MODE_ITEM)){
+        }else if (isDisplayModeItem()){
             final Item deletedItem = currentList.getItems().get(viewHolder.getAdapterPosition());
             final int deletedIndex = viewHolder.getAdapterPosition();
 
